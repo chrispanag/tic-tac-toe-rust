@@ -1,4 +1,4 @@
-use std::io::stdin;
+use std::io::{stdin, stdout, Write};
 
 use crate::board::Board;
 use crate::helpers::{print_player, Player};
@@ -9,6 +9,7 @@ mod helpers;
 enum ParseError {
     OutOfBounds,
     Malformed,
+    NotANumber,
 }
 
 fn parse_move(input: &str) -> Result<(u8, u8), ParseError> {
@@ -24,11 +25,11 @@ fn parse_move(input: &str) -> Result<(u8, u8), ParseError> {
 
     let x: u8 = match x.parse() {
         Ok(x) => x,
-        Err(_) => return Err(ParseError::Malformed),
+        Err(_) => return Err(ParseError::NotANumber),
     };
     let y: u8 = match y.parse() {
         Ok(y) => y,
-        Err(_) => return Err(ParseError::Malformed),
+        Err(_) => return Err(ParseError::NotANumber),
     };
 
     if x > 3 || y > 3 {
@@ -45,11 +46,18 @@ fn parse_move(input: &str) -> Result<(u8, u8), ParseError> {
 pub fn input_move(board: &Board) -> (u8, u8) {
     loop {
         let mut buff = String::new();
+        print!("Input your move: ");
+        stdout().flush().expect("flush");
         stdin().read_line(&mut buff).expect("Input!");
         let coord = match parse_move(&buff) {
             Ok(coord) => coord,
-            Err(_) => {
-                println!("Malformed input!");
+            Err(er) => {
+                match er {
+                    ParseError::Malformed => println!("Input should have the format \"x y\", eg: 1 1."),
+                    ParseError::NotANumber => println!("Input should only include two numbers and a space between them, eg: 2 3."),
+                    ParseError::OutOfBounds => println!("Coordinates can only be between 1 to 3.")
+                }
+
                 continue;
             }
         };
@@ -58,7 +66,7 @@ pub fn input_move(board: &Board) -> (u8, u8) {
             return coord;
         }
 
-        println!("There is already a move there!");
+        println!("The square {} {} is taken, please play another square.", coord.0, coord.1);
     }
 }
 
