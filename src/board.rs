@@ -1,5 +1,4 @@
-use crate::helpers::{parse_move, print_player, Player};
-use std::io::stdin;
+use crate::helpers::{print_player, Player};
 
 pub struct Board {
     pub board: [[Option<Player>; 3]; 3],
@@ -12,7 +11,7 @@ impl Board {
         }
     }
 
-    fn check_move_possible(&self, coord: (u8, u8)) -> bool {
+    pub fn check_move_possible(&self, coord: (u8, u8)) -> bool {
         let (x, y) = coord;
         let (x, y) = (x as usize, y as usize);
         match self.board[x as usize][y as usize] {
@@ -57,26 +56,6 @@ impl Board {
         }
 
         return None;
-    }
-
-    pub fn input_move(&self) -> (u8, u8) {
-        loop {
-            let mut buff = String::new();
-            stdin().read_line(&mut buff).expect("Input!");
-            let coord = match parse_move(&buff) {
-                Ok(coord) => coord,
-                Err(_) => {
-                    println!("Malformed input!");
-                    continue;
-                }
-            };
-
-            if Self::check_move_possible(self, coord) {
-                return coord;
-            }
-
-            println!("There is already a move there!");
-        }
     }
 
     // There's surely a better way to do that.
