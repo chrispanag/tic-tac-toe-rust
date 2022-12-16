@@ -1,16 +1,23 @@
+use crate::helpers::{parse_move, print_player, Player};
 use std::io::stdin;
-use crate::helpers::{Player, print_player, parse_move};
-
-type BoardType = [[Option<Player>; 3]; 3];
 
 pub struct Board {
-    pub board: BoardType,
+    pub board: [[Option<Player>; 3]; 3],
 }
 
 impl Board {
     pub fn new() -> Board {
         Board {
             board: [[None; 3]; 3],
+        }
+    }
+
+    fn check_move_possible(&self, coord: (u8, u8)) -> bool {
+        let (x, y) = coord;
+        let (x, y) = (x as usize, y as usize);
+        match self.board[x as usize][y as usize] {
+            Some(_) => false,
+            None => true,
         }
     }
 
@@ -28,15 +35,6 @@ impl Board {
         }
     }
 
-    pub fn check_move_possible(&self, coord: (u8, u8)) -> bool {
-        let (x, y) = coord;
-        let (x, y) = (x as usize, y as usize);
-        match self.board[x as usize][y as usize] {
-            Some(_) => false,
-            None => true,
-        }
-    }
-
     pub fn board_move(&mut self, coord: (u8, u8), player: Player) -> Result<(), &str> {
         let (x, y) = coord;
         let (x, y) = (x as usize, y as usize);
@@ -47,7 +45,8 @@ impl Board {
         return Err("There is already a move there!");
     }
 
-   pub fn engine(&self) -> Option<(u8, u8)> {
+    // Naive AI engine. Right now it only chooses the first available move.
+    pub fn engine(&self) -> Option<(u8, u8)> {
         for (i, row) in self.board.iter().enumerate() {
             for (j, _) in row.iter().enumerate() {
                 let coord = (i as u8, j as u8);
@@ -80,6 +79,7 @@ impl Board {
         }
     }
 
+    // There's surely a better way to do that.
     pub fn finish_condition(&self) -> Option<Player> {
         let mut conditions_lines: [Option<Player>; 3] = [None; 3];
         let mut conditions_rows: [Option<Player>; 3] = [None; 3];
