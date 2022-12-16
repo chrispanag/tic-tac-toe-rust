@@ -1,5 +1,8 @@
 use crate::helpers::{print_player, Player};
 
+const BOARD_SEPARATOR: char = '┃';
+const EMPTY_POSITION: char = '－';
+
 pub struct Board {
     pub board: [[Option<Player>; 3]; 3],
 }
@@ -21,16 +24,23 @@ impl Board {
     }
 
     pub fn print(&self) {
-        for line in self.board {
+        for (j, line) in self.board.iter().enumerate() {
+            if j > 0 {
+                println!("－－－－－－－－－{BOARD_SEPARATOR}－－－－－－－－－{BOARD_SEPARATOR}－－－－－－－－－");
+            }
             for (i, el) in line.iter().enumerate() {
                 match el {
-                    Some(x) if i < 2 => print!("\t{}\t|", print_player(x)),
-                    Some(x) => print!("\t{}", print_player(x)),
-                    None if i < 2 => print!("\t＿\t|"),
-                    None => print!("\t＿"),
+                    Some(x) if i < 2 => {
+                        print!("        {}        {BOARD_SEPARATOR}", print_player(x))
+                    }
+                    Some(x) => print!("        {}", print_player(x)),
+                    None if i < 2 => {
+                        print!("        {EMPTY_POSITION}        {BOARD_SEPARATOR}")
+                    }
+                    None => print!("        {EMPTY_POSITION}"),
                 }
             }
-            println!("\n")
+            println!();
         }
     }
 

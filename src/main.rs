@@ -53,9 +53,13 @@ pub fn input_move(board: &Board) -> (u8, u8) {
             Ok(coord) => coord,
             Err(er) => {
                 match er {
-                    ParseError::Malformed => println!("Input should have the format \"x y\", eg: 1 1."),
-                    ParseError::NotANumber => println!("Input should only include two numbers and a space between them, eg: 2 3."),
-                    ParseError::OutOfBounds => println!("Coordinates can only be between 1 to 3.")
+                    ParseError::Malformed => {
+                        println!("Input should have the format \"x y\", eg: 1 1.")
+                    }
+                    ParseError::NotANumber => println!(
+                        "Input should only include two numbers and a space between them, eg: 2 3."
+                    ),
+                    ParseError::OutOfBounds => println!("Coordinates can only be between 1 to 3."),
                 }
 
                 continue;
@@ -66,7 +70,10 @@ pub fn input_move(board: &Board) -> (u8, u8) {
             return coord;
         }
 
-        println!("The square {} {} is taken, please play another square.", coord.0, coord.1);
+        println!(
+            "The square {} {} is taken, please play another square.",
+            coord.0, coord.1
+        );
     }
 }
 
@@ -76,6 +83,11 @@ fn main() {
     let mut player = Player::X;
     let mut movenum: u8 = 0;
     let mut winner: Option<Player> = None;
+
+    println!("Welcome to Rust Tic Tac Toe! 😇\n");
+    println!("Input your move by inputting the coordinates of the board position.");
+    println!("The coordinates should be inputted in the following format: \"X Y\". Where X the row and Y the column. Coordinates should be from 1 to 3.\n");
+    println!("Let's begin 🎉\n");
 
     while winner == None {
         println!();
@@ -96,6 +108,7 @@ fn main() {
                 None => break,
             },
         };
+        println!();
 
         board.board_move(coord, player).expect("incorrect");
 
