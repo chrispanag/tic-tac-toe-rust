@@ -22,20 +22,24 @@ fn parse_move(input: &str) -> Result<(u8, u8), ParseError> {
         Some(y) => y,
     };
 
-    let x = match x.parse() {
+    let x: u8 = match x.parse() {
         Ok(x) => x,
         Err(_) => return Err(ParseError::Malformed),
     };
-    let y = match y.parse() {
+    let y: u8 = match y.parse() {
         Ok(y) => y,
         Err(_) => return Err(ParseError::Malformed),
     };
 
-    if x > 2 || y > 2 {
+    if x > 3 || y > 3 {
         return Err(ParseError::OutOfBounds);
     }
 
-    Ok((x, y))
+    if x < 1 || y < 1 {
+        return Err(ParseError::OutOfBounds);
+    }
+
+    Ok((x - 1, y - 1))
 }
 
 pub fn input_move(board: &Board) -> (u8, u8) {

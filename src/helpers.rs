@@ -6,8 +6,8 @@ pub enum Player {
 
 pub fn print_player(p: &Player) -> char {
     match p {
-        Player::X => 'X',
-        Player::O => 'O',
+        Player::X => 'Ｘ',
+        Player::O => '〇',
     }
 }
 

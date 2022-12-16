@@ -24,13 +24,13 @@ impl Board {
         for line in self.board {
             for (i, el) in line.iter().enumerate() {
                 match el {
-                    Some(x) if i < 2 => print!("{}\t|\t", print_player(x)),
-                    Some(x) => print!("{}", print_player(x)),
-                    None if i < 2 => print!("_\t|\t"),
-                    None => print!("_"),
+                    Some(x) if i < 2 => print!("\t{}\t|", print_player(x)),
+                    Some(x) => print!("\t{}", print_player(x)),
+                    None if i < 2 => print!("\t＿\t|"),
+                    None => print!("\t＿"),
                 }
             }
-            println!()
+            println!("\n")
         }
     }
 
