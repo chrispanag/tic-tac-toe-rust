@@ -80,7 +80,6 @@ pub fn input_move(board: &Board) -> (u8, u8) {
 fn main() {
     let mut board: Board = Board::new();
 
-    let mut player = Player::X;
     let mut movenum: u8 = 0;
     let mut winner: Option<Player> = None;
 
@@ -88,6 +87,26 @@ fn main() {
     println!("Input your move by inputting the coordinates of the board position.");
     println!("The coordinates should be inputted in the following format: \"X Y\". Where X the row and Y the column. Coordinates should be from 1 to 3.\n");
     println!("Let's begin 🎉\n");
+
+    print!("Enable 🤖 for X (1), O (2) or both (3)? ");
+    stdout().flush().expect("Flush!");
+
+    let mut buf = String::new();
+    stdin().read_line(&mut buf).expect("Input error!");
+
+    let ai_switch: u8 = buf.trim().parse().expect("parse!");
+
+    print!("Who plays first? Input X or O: ");
+    stdout().flush().expect("Flush!");
+
+    let mut buf = String::new();
+    stdin().read_line(&mut buf).expect("Input error!");
+
+    let mut player = if buf.trim().contains("X") {
+        Player::X
+    } else {
+        Player::O
+    };
 
     while winner == None {
         println!();
@@ -102,10 +121,19 @@ fn main() {
         println!();
 
         let coord = match player {
-            Player::X => input_move(&board),
-            Player::O => match board.engine() {
-                Some(coord) => coord,
-                None => break,
+            Player::X => match ai_switch {
+                2 => input_move(&board),
+                _ => match board.engine_v1(Player::X) {
+                    Some(coord) => coord,
+                    None => panic!("Can't happen!"),
+                },
+            },
+            Player::O => match ai_switch {
+                1 => input_move(&board),
+                _ => match board.engine_v1(Player::O) {
+                    Some(coord) => coord,
+                    None => panic!("Can't happen!"),
+                },
             },
         };
         println!();
