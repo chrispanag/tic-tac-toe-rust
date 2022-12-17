@@ -1,9 +1,11 @@
 use std::io::{stdin, stdout, Write};
 
 use crate::board::Board;
+use crate::game::Game;
 use crate::helpers::{print_player, Player};
 
 mod board;
+mod game;
 mod helpers;
 
 enum ParseError {
@@ -78,9 +80,6 @@ pub fn input_move(board: &Board) -> (u8, u8) {
 }
 
 fn main() {
-    let mut board: Board = Board::new();
-
-    let mut movenum: u8 = 0;
     let mut winner: Option<Player> = None;
 
     println!("Welcome to Rust Tic Tac Toe! 😇\n");
@@ -102,35 +101,37 @@ fn main() {
     let mut buf = String::new();
     stdin().read_line(&mut buf).expect("Input error!");
 
-    let mut player = if buf.trim().contains("X") {
+    let player = if buf.trim().contains("X") {
         Player::X
     } else {
         Player::O
     };
 
+    let mut game: Game = Game::new(player);
+
     while winner == None {
         println!();
         println!();
-        board.print();
+        game.board.print();
         println!();
         println!(
             "{}: Player {} is making a move!",
-            movenum + 1,
+            game.movenum + 1,
             print_player(&player)
         );
         println!();
 
-        let coord = match player {
+        let coord = match game.next_player {
             Player::X => match ai_switch {
-                2 => input_move(&board),
-                _ => match board.engine_v1(Player::X) {
+                2 => input_move(&game.board),
+                _ => match game.board.engine_v1(Player::X) {
                     Some(coord) => coord,
                     None => panic!("Can't happen!"),
                 },
             },
             Player::O => match ai_switch {
-                1 => input_move(&board),
-                _ => match board.engine_v1(Player::O) {
+                1 => input_move(&game.board),
+                _ => match game.board.engine_v1(Player::O) {
                     Some(coord) => coord,
                     None => panic!("Can't happen!"),
                 },
@@ -138,21 +139,18 @@ fn main() {
         };
         println!();
 
-        board.board_move(coord, player).expect("incorrect");
+        game.board
+            .board_move(coord, game.next_player)
+            .expect("incorrect");
 
-        // Next player
-        player = match player {
-            Player::X => Player::O,
-            _ => Player::X,
-        };
-        movenum = movenum + 1;
-        if movenum > 9 {
+        game.next_turn();
+        if game.movenum > 9 {
             break;
         }
-        winner = board.finish_condition()
+        winner = game.board.finish_condition()
     }
 
-    board.print();
+    game.board.print();
     println!();
     println!("Game finished!");
     match winner {
