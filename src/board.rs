@@ -126,10 +126,9 @@ impl Board {
 
     // Naive AI engine. Right now it only chooses the first available move.
     pub fn engine_v1(&self, player: Player) -> Option<(u8, u8)> {
-
         let mut possible_moves: [(Option<(u8, u8)>, i32); 9] = [(None, 0); 9];
         Self::get_possible_moves_for_player(&self, &mut possible_moves, player);
-        
+
         let mut max_score = 0;
         let mut max_coord: Option<(u8, u8)> = None;
         for (coord, score) in possible_moves.iter().filter(|(coord, _)| *coord != None) {
@@ -160,6 +159,7 @@ impl Board {
         let mut conditions_rows: [Option<Player>; 3] = [None; 3];
         let mut conditions_diagonal_1: Option<Player> = None;
         let mut conditions_diagonal_2: Option<Player> = None;
+
         for (i, line) in self.board.iter().enumerate() {
             for (j, el) in line.iter().enumerate() {
                 if j == 0 {
