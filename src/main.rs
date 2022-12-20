@@ -110,16 +110,14 @@ fn main() {
     let mut game: Game = Game::new(player);
 
     while winner == None {
-        println!();
-        println!();
+        println!("\n");
         game.board.print();
         println!();
         println!(
-            "{}: Player {} is making a move!",
+            "{}: Player {} is making a move!\n",
             game.movenum + 1,
-            print_player(&player)
+            print_player(&game.next_player)
         );
-        println!();
 
         let coord = match game.next_player {
             Player::X => match ai_switch {
